@@ -114,6 +114,11 @@
   (setq use-package-always-ensure t)
 #+END_SRC
 
+** Quelpa
+#+begin_src emacs-lisp
+  (use-package quelpa)
+#+end_src
+
 * Appearance
 ** Icons
 #+begin_src emacs-lisp
@@ -127,10 +132,24 @@
 
 ** Theme
 #+begin_src emacs-lisp
-  (load-theme 'dichromacy t)
+  ;; (load-theme 'dichromacy t)
   ;; (use-package dracula-theme
   ;;   :config
   ;;   (load-theme 'dracula t))
+  ;; (use-package moe-theme
+  ;;   :config
+  ;;   (load-theme 'moe-dark t))
+
+  (setq modus-themes-mode-line '(borderless moody))
+  (setq modus-themes-region '(accented bg-only))
+  (setq modus-themes-completions 'moderate)
+  (setq modus-themes-bold-constructs nil)
+  (setq modus-themes-paren-match '(bold intense))
+  (setq modus-themes-italic-constructs t)
+  (setq modus-themes-syntax '(alt-syntax yellow-comments))
+  (setq modus-themes-org-blocks 'gray-background)
+
+  (load-theme 'modus-vivendi t)
 #+end_src
 
 *** Font
@@ -161,6 +180,17 @@
   (column-number-mode 1)
 #+END_SRC
 
+** Moody
+#+begin_src emacs-lisp
+  (use-package moody
+    :disabled
+    :config
+    (setq x-underline-at-descent-line t)
+    (moody-replace-mode-line-buffer-identification)
+    (moody-replace-vc-mode)
+    (moody-replace-eldoc-minibuffer-message-function))
+#+end_src
+
 ** Fill Column
 #+BEGIN_SRC emacs-lisp
   (use-package visual-fill-column
@@ -188,129 +218,19 @@
 ** EVIL
 #+begin_src emacs-lisp
   (use-package evil
+    :disabled
     :init
     (setq evil-want-integration t
           evil-want-keybinding nil)
     :config (evil-mode 1))
 
   (use-package evil-collection
+    :disabled
     :after evil
     :diminish evil-collection-unimpaired-mode
     :config
     (evil-collection-init))
 #+end_src
-
-** Meow (EVIL Alternative)
-*** Configuration
-#+begin_src emacs-lisp
-  (defun meow-setup ()
-    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-    (meow-motion-overwrite-define-key
-     '("j" . meow-next)
-     '("k" . meow-prev))
-    (meow-leader-define-key
-     ;; SPC j/k will run the original command in MOTION state.
-     '("j" . "H-j")
-     '("k" . "H-k")
-     ;; Use SPC (0-9) for digit arguments.
-     '("1" . meow-digit-argument)
-     '("2" . meow-digit-argument)
-     '("3" . meow-digit-argument)
-     '("4" . meow-digit-argument)
-     '("5" . meow-digit-argument)
-     '("6" . meow-digit-argument)
-     '("7" . meow-digit-argument)
-     '("8" . meow-digit-argument)
-     '("9" . meow-digit-argument)
-     '("0" . meow-digit-argument)
-     '("/" . meow-keypad-describe-key)
-     '("?" . meow-cheatsheet))
-    (meow-normal-define-key
-     '("0" . meow-expand-0)
-     '("9" . meow-expand-9)
-     '("8" . meow-expand-8)
-     '("7" . meow-expand-7)
-     '("6" . meow-expand-6)
-     '("5" . meow-expand-5)
-     '("4" . meow-expand-4)
-     '("3" . meow-expand-3)
-     '("2" . meow-expand-2)
-     '("1" . meow-expand-1)
-     '("-" . negative-argument)
-     '(";" . meow-reverse)
-     '("," . meow-inner-of-thing)
-     '("." . meow-bounds-of-thing)
-     '("[" . meow-beginning-of-thing)
-     '("]" . meow-end-of-thing)
-     '("a" . meow-append)
-     '("A" . meow-open-below)
-     '("b" . meow-back-word)
-     '("B" . meow-back-symbol)
-     '("c" . meow-change)
-     '("d" . meow-delete)
-     '("D" . meow-backward-delete)
-     '("e" . meow-next-word)
-     '("E" . meow-next-symbol)
-     '("f" . meow-find)
-     '("g" . meow-cancel-selection)
-     '("G" . meow-grab)
-     '("h" . meow-left)
-     '("H" . meow-left-expand)
-     '("i" . meow-insert)
-     '("I" . meow-open-above)
-     '("j" . meow-next)
-     '("J" . meow-next-expand)
-     '("k" . meow-prev)
-     '("K" . meow-prev-expand)
-     '("l" . meow-right)
-     '("L" . meow-right-expand)
-     '("m" . meow-join)
-     '("n" . meow-search)
-     '("o" . meow-block)
-     '("O" . meow-to-block)
-     '("p" . meow-yank)
-     '("q" . meow-quit)
-     '("Q" . meow-goto-line)
-     '("r" . meow-replace)
-     '("R" . meow-swap-grab)
-     '("s" . meow-kill)
-     '("t" . meow-till)
-     '("u" . meow-undo)
-     '("U" . meow-undo-in-selection)
-     '("v" . meow-visit)
-     '("w" . meow-mark-word)
-     '("W" . meow-mark-symbol)
-     '("x" . meow-line)
-     '("X" . meow-goto-line)
-     '("y" . meow-save)
-     '("Y" . meow-sync-grab)
-     '("z" . meow-pop-selection)
-     '("'" . repeat)
-     '("<escape>" . mode-line-other-buffer)))
-#+end_src
-
-*** Bootstrap
-#+begin_src emacs-lisp
-  (use-package meow
-    :disabled
-    :config
-    (meow-setup)
-    (meow-global-mode 1))
-#+end_src
-
-** Projectile
-#+BEGIN_SRC emacs-lisp
-  (use-package rg)
-  (use-package ag)
-
-  (use-package projectile
-    :disabled
-    :after (rg ag)
-    :bind (:map projectile-mode-map
-                ("C-c p g" . projectile-grep)
-                ("C-c p" . projectile-command-map))
-    :config (projectile-mode 1))
-#+END_SRC
 
 ** Consult
 #+BEGIN_SRC emacs-lisp
@@ -330,8 +250,6 @@
     (completion-category-overrides '((file (styles basic partial-completion)))))
 #+END_SRC
 
-#+RESULTS:
-
 ** Vertico
 #+BEGIN_SRC emacs-lisp
   (use-package vertico
@@ -339,45 +257,9 @@
     (vertico-mode))
 #+END_SRC
 
-** Helm
-#+begin_src emacs-lisp
-  (use-package helm
-    :disabled
-    :diminish
-    :bind (([remap execute-extended-command] . helm-M-x)
-           ([remap find-file] . helm-find-files)
-           ("M-s" . helm-imenu)
-           ([remap switch-to-buffer] . helm-mini)
-           ([remap list-buffers] . helm-mini))
-    :config
-    (helm-mode 1))
-#+end_src
-
-*** Projectile Integration
-#+begin_src emacs-lisp
-  (use-package helm-projectile
-    :disabled
-    :after (helm projectile)
-    :config
-    (helm-projectile-on))
-
-#+end_src
-
-*** Swiper
-#+begin_src emacs-lisp
-  (use-package swiper-helm
-    :disabled
-    :bind (("C-s" . swiper-helm)))
-#+end_src
-
 ** Undo-tree
 #+BEGIN_SRC emacs-lisp
-  (use-package undo-tree
-    :diminish undo-tree-mode
-    :bind (:map undo-tree-map
-                ([remap undo] . nil))
-    :config
-    (global-undo-tree-mode))
+  (use-package vundo)
 #+END_SRC
 
 ** Expand Region
@@ -415,7 +297,7 @@ Adds rainbow highlighting to brackets.
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
     :defer t
-    :config (prog-mode . rainbow-delimiters-mode))
+    :hook (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
 ** Highlight Parentheses
@@ -429,6 +311,8 @@ Highlights the parentheses that you are currently inside
   (use-package corfu
     :custom
     (corfu-auto t)
+    (corfu-auto-prefix 1)
+    (corfu-auto-delay 0)
     :init
     ;; in the future, it will be exclusive to just programming modes.
     (global-corfu-mode))
@@ -442,57 +326,43 @@ Highlights the parentheses that you are currently inside
     :custom
     (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
     :config
-    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 #+END_SRC
+
+*** Doc
+#+begin_src emacs-lisp
+  (use-package corfu-doc
+    :hook (corfu-mode . corfu-doc-mode))
+#+end_src
 
 #+RESULTS:
-: t
 
-** Company (Auto-completion)
-#+BEGIN_SRC emacs-lisp
-  (use-package company
-    :disabled
-    :defer t
-    :diminish
-    :hook (prog-mode . company-mode)
-    :custom
-    (company-idle-delay 0)
-    (company-minimum-prefix-length 1)
-    (company-backends '(company-capf))
-    (company-selection-wrap-around t)
-    (company-show-numbers t))
-#+END_SRC
-
-*** Company Posframe
+*** Terminal
 #+begin_src emacs-lisp
-  (use-package company-posframe
-    :disabled
-    :defer t
-    :after company--begin-inhibit-commands
-    :hook (company-mode . company-posframe-mode))
+  (quelpa '(popon
+            :fetcher git
+            :url "https://codeberg.org/akib/emacs-popon.git"))
+
+  (quelpa '(corfu-terminal
+            :fetcher git
+            :url "https://codeberg.org/akib/emacs-corfu-terminal.git"))
 #+end_src
 
-*** Company Box
+**** Documentation
 #+begin_src emacs-lisp
-  (use-package company-box
-    :disabled
-    :defer t
-    :diminish
-    :hook (company-mode . company-box-mode))
+  (quelpa '(corfu-doc-terminal
+            :fetcher git
+            :url "https://codeberg.org/akib/emacs-corfu-doc-terminal.git"))
+
+  (add-hook 'corfu-terminal-mode-hook 'corfu-doc-terminal-mode)
 #+end_src
 
-** FlyCheck
+** FlyMake
 #+BEGIN_SRC emacs-lisp
   (add-hook 'prog-mode-hook 'flymake-mode)
   (custom-set-variables
    '(help-at-pt-timer-delay 0.1)
    '(help-at-pt-display-when-idle '(flymake-diagnostic)))
-
-  (use-package flycheck
-    :disabled
-    :diminish
-    :defer t
-    :hook (prog-mode . flycheck-mode))
 #+END_SRC
 
 ** Eldoc Box
@@ -513,6 +383,7 @@ Highlights the parentheses that you are currently inside
 Depending whether you are on insert or normal mode, it will swap the line
 number display mode.
 #+BEGIN_SRC emacs-lisp
+  (setq display-line-numbers-type 'relative)
   (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 #+END_SRC
 
@@ -548,17 +419,23 @@ Automatically closes parentheses
 #+BEGIN_SRC emacs-lisp
   (use-package eglot
     :bind (:map eglot-mode-map
-                ([remap display-local-help] . eldoc-box-eglot-help-at-point))
+                ([remap display-local-help] . eldoc-box-eglot-help-at-point)
+                ("C-." . eglot-code-actions)
+                ("<f2>" . eglot-rename))
     :defer t)
 #+END_SRC
 
-#+RESULTS:
-: eldoc-box-eglot-help-at-point
+** LSP Bridge
+#+begin_src emacs-lisp
+  (quelpa '(lsp-bridge
+            :fetcher git
+            :url "https://github.com/manateelazycat/lsp-bridge.git"))
+#+end_src
+
 
 ** LSP
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
-    :disabled
     :defer t
     :bind (:map lsp-mode-map
                 ("C-." . lsp-execute-code-action)
@@ -581,6 +458,15 @@ Automatically closes parentheses
                          (diff-hl-flydiff-mode)
                          (diff-hl-mode))))
 #+end_src
+
+** Guess Indent
+#+begin_src emacs-lisp
+  (use-package dtrt-indent
+    :diminish
+    :hook (prog-mode . dtrt-indent-mode))
+#+end_src
+
+#+RESULTS:
 
 ** Programming Languages
 *** C
@@ -613,36 +499,28 @@ Automatically closes parentheses
 
 *** SmileBASIC
 #+BEGIN_SRC emacs-lisp
-  (use-package smilebasic
-    :defer t
-    :straight (smilebasic :type git :host github :repo "ansxor/smilebasic-mode")
-    :config
-    (add-hook 'smilebasic-mode-hook (lambda () (run-hooks 'prog-mode-hook))))
+  (quelpa '(smilebasic
+            :fetcher git
+            :url "https://github.com/y-ack/smilebasic-mode.git"))
+
+  (add-hook 'smilebasic-mode-hook (lambda () (run-hooks 'prog-mode-hook)))
 #+END_SRC
 
 *** Rust
 #+BEGIN_SRC emacs-lisp
   (use-package rustic
     :defer t
-    :after (aggressive-indent lsp)
+    :after (aggressive-indent)
     :init
     (setq lsp-rust-server 'rust-analyzer)
     (setq rustic-format-on-save t)
     ;; :hook (rustic-mode . (aggressive-indent-mode lsp-deferred))
-    (add-hook 'rustic-mode-hook #'aggressive-indent-mode)
-    (add-hook 'rustic-mode-hook #'lsp-deferred))
-#+END_SRC
-
-*** Java
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-java
-    :defer t
-    :hook (java-mode . lsp-deferred))
+    (add-hook 'rustic-mode-hook #'aggressive-indent-mode))
 #+END_SRC
 
 *** JavaScript
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'js-mode-hook #'lsp-deferred)
+  ;; (add-hook 'js-mode-hook #'lsp-deferred)
 #+END_SRC
 
 **** REPL
@@ -657,14 +535,16 @@ Automatically closes parentheses
 
 **** Vue
 #+begin_src emacs-lisp
-  (use-package vue-mode)
+  (use-package vue-mode
+    :disabled
+    :config
+    (add-to-list 'eglot-server-programs '(vue-mode . ("/opt/homebrew/bin/vue-language-server" "--stdio"))))
 #+end_src
 
 *** TypeScript
 #+BEGIN_SRC emacs-lisp
   (use-package typescript-mode
-    :defer t
-    :hook (typescript-mode . lsp-deferred))
+    :defer t)
 #+END_SRC
 
 *** Common LISP (SLIME)
@@ -702,7 +582,7 @@ Automatically closes parentheses
     :defer t
     :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.jsp\\'" "\\.as[cp]x\\'"
            "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.jst.ejs\\'"
-           "\\.html?\\'")
+           "\\.html?\\'" "\\.vue\\'")
     :hook (web-mode . lsp-deferred)
     :config
     (add-hook 'web-mode-hook '(lambda () (impatient-mode t)))
@@ -718,7 +598,6 @@ Automatically closes parentheses
 
 *** CSS
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'css-mode-hook #'lsp-deferred)
   (add-hook 'css-mode-hook 'impatient-mode)
 
   (use-package rainbow-mode
@@ -740,8 +619,7 @@ Automatically closes parentheses
     :custom (python-shell-interpreter "python3"))
 
   (use-package lsp-python-ms
-    :after (python lsp)
-    :hook (python-mode . lsp-deferred)
+    :after (python)
     :custom
     (lsp-python-auto-install-server t))
 #+end_src
@@ -750,7 +628,8 @@ Automatically closes parentheses
 #+BEGIN_SRC emacs-lisp
   (use-package ob-ipython
     :config
-    (add-to-list 'org-babel-load-languages '(ipython . t)))
+    ;;(add-to-list 'org-babel-load-languages '(ipython . t))
+    )
 #+END_SRC
 
 *** Nim
@@ -763,7 +642,8 @@ Automatically closes parentheses
     :defer t
     :config
     (add-hook 'nimsuggest-mode-hook 'flycheck-nimsuggest-setup)
-    (add-hook 'nim-mode-hook 'nimsuggest-mode))
+    (add-hook 'nim-mode-hook 'nimsuggest-mode)
+    (add-to-list 'eglot-server-programs '(nim-mode . ("/Users/cherry/.nimble/bin/nimlsp"))))
 #+end_src
 
 *** Dart
@@ -783,8 +663,7 @@ Automatically closes parentheses
 *** C#
 #+begin_src emacs-lisp
   (use-package csharp-mode
-    :defer t
-    :hook (csharp-mode . lsp-deferred))
+    :defer t)
 #+end_src
 
 *** Mermaid (Diagrams)
@@ -797,12 +676,70 @@ Automatically closes parentheses
     (setq ob-mermaid-cli-path "/opt/homebrew/bin/mmdc"))
 #+end_src
 
+*** Haskell
+#+begin_src emacs-lisp
+  (use-package haskell-mode)
+#+end_src
+
+*** PlantUML
+#+begin_src emacs-lisp
+  ;; todo: need to make these variables from nix-shellx'
+  (use-package plantuml-mode
+    :config
+    (let ((path  "/nix/store/p9ajjyxf6gfwpa1x7ar8jx2g3iv6p4q9-plantuml-1.2022.3/lib/plantuml.jar"))
+      (setq plantuml-jar-path path)
+      (setq plantuml-default-exec-mode 'jar)
+      (setq org-plantuml-jar-path (expand-file-name path))
+      (setenv "GRAPHVIZ_DOT" "/nix/store/qp2lxqgwqr71kdzw1bvl3v3zm2z0icm0-graphviz-2.50.0/bin/dot")))
+#+end_src
+
+#+RESULTS:
+: t
+
+*** Pug Markup
+#+begin_src emacs-lisp
+  (use-package pug-mode)
+#+end_src
+
+*** Clojure
+#+begin_src emacs-lisp
+  (use-package clojure-mode)
+#+end_src
+
+**** CIDER
+#+begin_src emacs-lisp
+  (use-package cider)
+#+end_src
+
+*** D
+#+begin_src emacs-lisp
+  (use-package d-mode
+    :config
+    (add-to-list 'eglot-server-programs '(d-mode . ("~/bin/serve-d"))))
+#+end_src
+
 * Org
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook #'org-indent-mode)
   (add-hook 'org-mode-hook #'visual-line-mode)
   (setq org-adapt-indentation nil)
 #+END_SRC
+
+** TODO Embed YouTube Videos
+https://github.com/TobiasZawada/org-yt
+
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package org-yt)
+#+END_SRC
+
+** Org Babel
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((plantuml . t)))
+#+END_SRC
+
+#+RESULTS:
 
 * EWW
 ** Center text and wrap
@@ -856,4 +793,25 @@ Source (Decoder): https://synthetic.garden/3y3.htm
   (use-package multi-vterm
     :defer t
     :hook (vterm-mode . hide-mode-line-mode))
+#+end_src
+
+* Keybinds
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-M-y") 'backward-up-list)
+  (global-set-key (kbd "C-M-u") 'down-list)
+
+  (global-set-key (kbd "C-S-SPC")
+                  (lambda ()
+                    (interactive)
+                    (move-end-of-line nil)
+                    (set-mark-command nil)
+                    (move-beginning-of-line nil)))
+
+#+end_src
+
+* Elcord
+#+begin_src emacs-lisp
+  (use-package elcord
+    :config
+    (elcord-mode))
 #+end_src
