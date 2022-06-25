@@ -155,14 +155,14 @@
 *** Font
 #+BEGIN_SRC emacs-lisp
   (defconst cherry/font-name "Hack Nerd Font FC Ligatured CCG")
-  (let ((font-name "Hack Nerd Font FC Ligatured CCG")
-        (modeline-font-size 16)
-        (font-size 16))
-    (add-to-list 'default-frame-alist (cons 'font (format "%s-%d" cherry/font-name font-size)))
-    (set-face-attribute 'default nil :font (format "%s-%d" font-name font-size))
-    (set-face-attribute 'mode-line nil :font (format "%s-%d" font-name modeline-font-size))
-    (set-face-attribute 'mode-line-inactive nil :font (format "%s-%d" font-name modeline-font-size))
-    (custom-set-faces '(fixed-pitch-serif ((t (:family cherry/font-name))))))
+  (when (find-font (font-spec :name cherry/font-name))
+    (let ((modeline-font-size 16)
+          (font-size 16))
+      (add-to-list 'default-frame-alist (cons 'font (format "%s-%d" cherry/font-name font-size)))
+      (set-face-attribute 'default nil :font (format "%s-%d" cherry/font-name font-size))
+      (set-face-attribute 'mode-line nil :font (format "%s-%d" cherry/font-name modeline-font-size))
+      (set-face-attribute 'mode-line-inactive nil :font (format "%s-%d" cherry/font-name modeline-font-size))
+      (custom-set-faces '(fixed-pitch-serif ((t (:family cherry/font-name)))))))
 #+END_SRC
 
 ** Remove ugly GUI components
@@ -242,9 +242,6 @@
            ("M-s M-s" . consult-line)
            ("M-s M-g" . consult-git-grep)))
 #+END_SRC
-
-#+RESULTS:
-: consult-git-grep
 
 ** Orderless
 #+BEGIN_SRC emacs-lisp
