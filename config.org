@@ -156,7 +156,7 @@
 #+BEGIN_SRC emacs-lisp
   (defconst cherry/font-name "Hack Nerd Font FC Ligatured CCG")
   (let ((font-name "Hack Nerd Font FC Ligatured CCG")
-        (modeline-font-size 12)
+        (modeline-font-size 16)
         (font-size 16))
     (add-to-list 'default-frame-alist (cons 'font (format "%s-%d" cherry/font-name font-size)))
     (set-face-attribute 'default nil :font (format "%s-%d" font-name font-size))
@@ -164,8 +164,6 @@
     (set-face-attribute 'mode-line-inactive nil :font (format "%s-%d" font-name modeline-font-size))
     (custom-set-faces '(fixed-pitch-serif ((t (:family cherry/font-name))))))
 #+END_SRC
-
-#+RESULTS:
 
 ** Remove ugly GUI components
 #+BEGIN_SRC emacs-lisp
@@ -211,6 +209,7 @@
 #+begin_src emacs-lisp
   (use-package beacon
     :diminish
+    :disabled t
     :config (beacon-mode 1))
 #+end_src
 
@@ -238,8 +237,14 @@
     :defer t
     :bind (([remap switch-to-buffer] . consult-buffer)
            ([remap project-switch-to-buffer] . consult-project-buffer)
-           ([remap goto-line] . consult-goto-line)))
+           ([remap goto-line] . consult-goto-line)
+           ("M-s M-i" . consult-imenu)
+           ("M-s M-s" . consult-line)
+           ("M-s M-g" . consult-git-grep)))
 #+END_SRC
+
+#+RESULTS:
+: consult-git-grep
 
 ** Orderless
 #+BEGIN_SRC emacs-lisp
@@ -365,12 +370,22 @@ Highlights the parentheses that you are currently inside
    '(help-at-pt-display-when-idle '(flymake-diagnostic)))
 #+END_SRC
 
-** Eldoc Box
+** Expand Region
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :bind (("C-=" . er/expand-region)))
+#+end_src
+
+** Eldoc
+#+begin_src emacs-lisp
+  (use-package eldoc
+    :diminish)
+#+end_src
+
+*** Eldoc Box
 #+BEGIN_SRC emacs-lisp
   (use-package eldoc-box)
 #+END_SRC
-
-#+RESULTS:
 
 ** Dumb Jump (jumps to references)
 #+BEGIN_SRC emacs-lisp
@@ -449,6 +464,13 @@ Automatically closes parentheses
     (lsp-enable-indentation nil)
     (lsp-headerline-breadcrumb-enable nil))
 #+END_SRC
+
+** TreeSitter
+#+begin_src emacs-lisp
+  (use-package tree-sitter)
+  (use-package tree-sitter-langs
+    :after (tree-sitter))
+#+end_src
 
 ** Highlight Diffs
 #+begin_src emacs-lisp
@@ -807,11 +829,44 @@ Source (Decoder): https://synthetic.garden/3y3.htm
                     (set-mark-command nil)
                     (move-beginning-of-line nil)))
 
+
 #+end_src
 
 * Elcord
 #+begin_src emacs-lisp
   (use-package elcord
     :config
+    (defun cy/elcord-project-name (status)
+      "Append the current project name to the buffer STATUS."
+      (concat status
+              (if (project-current)
+                  (format " (%s)"
+                          (file-name-nondirectory
+                           (directory-file-name (project-root (project-current)))))
+                "")))
+    (advice-add 'elcord-buffer-details-format
+                :filter-return #'cy/elcord-project-name)
     (elcord-mode))
+#+end_src
+
+#+RESULTS:
+: t
+
+* EMMS
+#+begin_src emacs-lisp
+  (use-package emms
+    :config
+    (require 'emms-setup) 
+    (require 'emms-player-mpd)
+    (require 'emms-volume)
+    (emms-all)
+    (setq emms-seek-seconds 5
+          emms-player-list '(emms-player-mpd)
+          emms-info-functions '(emms-info-mpd)
+          emms-volume-change-function 'emms-volume-mpd-change
+          emms-player-mpd-music-directory "~/Music") ;FIXME: use mpd.conf
+
+    ;; set mpd address and port
+    (setq emms-player-mpd-server-name "localhost")
+    (setq emms-player-mpd-server-port "6600"))
 #+end_src
